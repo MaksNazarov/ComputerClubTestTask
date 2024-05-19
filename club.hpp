@@ -8,9 +8,6 @@
 #include <iostream>
 #include <stdexcept>
 
-// TODO: solve issues with multiple string storages: client map? shared_ptr?
-// TODO: check each function for expensive type passing: string & ?
-
 std::string timeFormatted(int time);
 
 class Table {
@@ -63,7 +60,7 @@ class Club {
     std::queue<std::string> waitingClientQueue; // to choose client to lead to an empty table
     std::map<std::string, int> clientTable; // to get a number of table client is occupying
 
-    void logEvent(int time, int eventID, std::string message);
+    void logEvent(int time, int eventID, const std::string &message);
 
     // Below are 4 utility functions used for adding/removing client from waiting or busy client categories
     void utilAddClientToWaiting(const std::string & name);
@@ -77,13 +74,13 @@ class Club {
     // Out events - events that are fired as a responce to incoming events
 
     // fires at the end of workday or when queue is full and another client is trying to enter
-    void outClientLeaves(int time, std::string name); 
+    void outClientLeaves(int time, const std::string &name); 
 
     // fires when a table becomes empty
     void outFirstClientFromQueueSits(int time, int tableNum);
 
     // fires when an error of some kind is encountered
-    void outError(int time, std::string message); 
+    void outError(int time, const std::string & message); 
 public:
     Club(int openTime_, int closeTime_, int hourlyRate_, int tableCount_) : 
         openTime(openTime_), closeTime(closeTime_), hourlyRate(hourlyRate_), tableCount(tableCount_) {
@@ -91,13 +88,13 @@ public:
         realQueueSize = 0;
     }
     // Incoming event-handling functions
-    void inClientEnters(int time, const std::string name);
+    void inClientEnters(int time, const std::string & name);
 
-    void inClientSitsToTable(int time, int tableNum, const std::string name);
+    void inClientSitsToTable(int time, int tableNum, const std::string & name);
 
-    void inClientWaits(int time, const std::string name);
+    void inClientWaits(int time, const std::string & name);
 
-    void inClientLeaves(int time, const std::string name);
+    void inClientLeaves(int time, const std::string & name);
 
     // simple method to log input entries after they pass parser checks
     void logInEvent(const std::string & s);

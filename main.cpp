@@ -10,19 +10,11 @@
 #include "club.hpp"
 #include "util.hpp"
 
-// TODO: clean up "auto" usage
-// TODO: distribute methods & class across files
-
 class parseError : public std::runtime_error {
 public:
     explicit parseError(const std::string &what_arg)
         : std::runtime_error(what_arg){};
 };
-// TODO: use custom namespace?
-
-// TODO: distribute data to translation units: at least enums & maps should be in different ones, innit?
-
-// TODO: choose a struct to avoid storing multiple copies of the same client name
 
 bool isClientNameAppropriate(const std::string & name) {
     for (auto c : name) {
@@ -50,8 +42,6 @@ int parseEventString(Club & club, const std::string & eventString) {
         throw parseError(eventString);
     }
 
-    // TODO: check that hour & minute are double-digit
-
     club.logInEvent(eventString);
     int time = timeInMinutes(hour, minute);
     switch(eventID) {
@@ -76,15 +66,10 @@ int parseEventString(Club & club, const std::string & eventString) {
 
 
 int main(int argc, char *argv[]) {
-    // TODO: uncomment when turning in
-    // if (argc < 2) {
-    //     // TODO: filename not passed, throw
-    // } else if (argc > 2) {
-    //     // TODO: passed more args than necessary, throw
-    // }
-    // ifstream file(argv[1]);
-
-    std::ifstream file("./test.txt"); // TODO: remove when done
+    if (argc != 2) {
+        std::cout << "Error: incorrect input format; this program has a single filename as an argument\n";
+    }
+    std::ifstream file(argv[1]);
 
     if (!file.is_open()) {
         std::cout << "Error: Could not open file " << argv[1] << '\n';
@@ -115,10 +100,7 @@ int main(int argc, char *argv[]) {
             || timeSeparator2 != ':') {
             throw parseError(line2);
         }
-        if (!(iss >> hourlyRate) || !iss.eof()) throw parseError(line3); // TODO: check iss emptiness
-
-        // TODO: hour & minute are double-digit
-        // TODO: all separators and spaces are correct
+        if (!(iss >> hourlyRate) || !iss.eof()) throw parseError(line3);
 
         Club club(
             timeInMinutes(openHour, openMinute),

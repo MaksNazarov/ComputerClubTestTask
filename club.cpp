@@ -8,7 +8,7 @@
 #include "util.hpp"
 #include "club.hpp"
 
-void Club::logEvent(int time, int eventID, std::string message) {
+void Club::logEvent(int time, int eventID, const std::string &message) {
     logBook.emplace_back(timeFormatted(time) + " " + std::to_string(eventID) + " " +
                        message);
 }
@@ -38,7 +38,7 @@ void Club::utilRemoveClientFromTables(int time, const std::string &name) {
     }
 }
 
-void Club::outClientLeaves(int time, std::string name) {
+void Club::outClientLeaves(int time, const std::string &name) {
     utilRemoveClientFromWaiting(name);
     logEvent(time, 11, name);
 }
@@ -63,9 +63,9 @@ void Club::outFirstClientFromQueueSits(int time, int tableNum) {
   }
 }
 
-void Club::outError(int time, std::string message) { logEvent(time, 13, message); }
+void Club::outError(int time, const std::string & message) { logEvent(time, 13, message); }
 
-void Club::inClientEnters(int time, const std::string name) {
+void Club::inClientEnters(int time, const std::string & name) {
     if (waitingClientSet.contains(name)) {
         outError(time, "YouShallNotPass");
         return;
@@ -77,7 +77,7 @@ void Club::inClientEnters(int time, const std::string name) {
     utilAddClientToWaiting(name);
 }
 
-void Club::inClientSitsToTable(int time, int tableNum, const std::string name) {
+void Club::inClientSitsToTable(int time, int tableNum, const std::string & name) {
     if (!waitingClientSet.contains(name)) {
         outError(time, "ClientUnknown");
         return;
@@ -90,7 +90,7 @@ void Club::inClientSitsToTable(int time, int tableNum, const std::string name) {
     utilAssignClientToTable(time, tableNum, name);
 }
 
-void Club::inClientWaits(int time, const std::string name) {
+void Club::inClientWaits(int time, const std::string & name) {
     if (clientTable.size() < tableCount) {
         outError(time, "ICanWaitNoLonger!");
         return;
@@ -99,7 +99,7 @@ void Club::inClientWaits(int time, const std::string name) {
     outClientLeaves(time, name);
 }
 
-void Club::inClientLeaves(int time, const std::string name) {
+void Club::inClientLeaves(int time, const std::string & name) {
     if (!waitingClientSet.contains(name) && !clientTable.contains(name)) {
         outError(time, "ClientUnknown");
         return;
